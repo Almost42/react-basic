@@ -120,6 +120,7 @@ class IngredientsComponent extends React.Component {
           <button onClick={()=>this.addIngredientHandler("珍珠")}>珍珠</button>
           <button onClick={()=>this.addIngredientHandler("芋泥")}>芋泥</button>
           <button onClick={()=>this.addIngredientHandler("葡萄干")}>葡萄干</button>
+          <button onClick={()=>this.addIngredientHandler("芝士")}>芝士</button>
         <h5>订单：</h5>
         <ul>
           {
