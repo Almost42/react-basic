@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react';
-import React from 'react';
+import React, { createRef } from 'react';
 import ReactDOM from 'react-dom/client';
 
 
@@ -106,7 +105,7 @@ class IngredientsComponent extends React.Component {
   state = {
     ingredients: ["奶茶"]
   }
-  addIngredientHandler = (name) =>{
+  addIngredientHandler = (name) => {
     this.setState({
       ingredients: [...this.state.ingredients, name]
     })
@@ -117,14 +116,14 @@ class IngredientsComponent extends React.Component {
       <div>
         <hr></hr>
         <h5>菜单：</h5>
-          <button onClick={()=>this.addIngredientHandler("珍珠")}>珍珠</button>
-          <button onClick={()=>this.addIngredientHandler("芋泥")}>芋泥</button>
-          <button onClick={()=>this.addIngredientHandler("葡萄干")}>葡萄干</button>
-          <button onClick={()=>this.addIngredientHandler("芝士")}>芝士</button>
+        <button onClick={() => this.addIngredientHandler("珍珠")}>珍珠</button>
+        <button onClick={() => this.addIngredientHandler("芋泥")}>芋泥</button>
+        <button onClick={() => this.addIngredientHandler("葡萄干")}>葡萄干</button>
+        <button onClick={() => this.addIngredientHandler("芝士")}>芝士</button>
         <h5>订单：</h5>
         <ul>
           {
-            this.state.ingredients.map((m)=>(
+            this.state.ingredients.map((m) => (
               <li key={m}>{m}</li>
             ))
           }
@@ -134,14 +133,173 @@ class IngredientsComponent extends React.Component {
   }
 }
 
+class FormComponent extends React.Component {
+
+  state = {
+    text: 'this is a msg.'
+  }
+
+  inputChange = (e) => {
+    const value = e.target.value;
+    console.log(value)
+    this.setState = ({
+      text: value
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <hr />
+        <h5>{this.state.text}</h5>
+        <div>
+          <input type="text" value={this.state.text} onChange={this.inputChange} />
+        </div>
+      </div>
+    )
+  }
+}
+
+class InputDomComponent extends React.Component {
+  msgRef = createRef();
+  clickHandler = () => {
+    console.log(this.msgRef.current.value);
+  }
+
+  render() {
+    return (
+      <>
+        <input ref={this.msgRef} />
+        <button onClick={this.clickHandler}>hello</button>
+      </>
+    )
+  }
+}
+
+class SonClassComponent extends React.Component {
+  statusChange = (status) => {
+    this.props.status(status)
+  }
+  render() {
+    return (
+      <>
+        {this.props.navi}
+        <div>我是类子组件，{this.props.msg}</div>
+        <ul>
+          {this.props.list.map(
+            (item, index) => {
+              return <li key={index}>{item}</li>
+            }
+          )}
+        </ul>
+        <button onClick={this.props.alert}>点击调用父组件</button>
+        <button type='button' onClick={() => this.statusChange('状态1')}>状态1</button>
+        <button type='button' onClick={() => this.statusChange('状态2')}>状态2</button>
+      </>
+    )
+  }
+}
+function SonFunctionComponent(props) {
+  return <div>我是函数子组件，{props.msg}</div>
+}
+
+class ParentClassComponent extends React.Component {
+  statusChangeHandler = (subTaskStatus) => {
+    alert("当前子任务状态：" + subTaskStatus)
+  }
+  state = {
+    msg: "msg from parent...",
+    list: [1, 2, 3, 4],
+    alert: () => {
+      alert("父组件提示！")
+    }
+  }
+  render() {
+    return (
+      <>
+        <hr />
+        <SonClassComponent msg={this.state.msg}
+          list={this.state.list}
+          alert={this.state.alert}
+          status={this.statusChangeHandler}
+          navi={<div>父组件的导航组件 </div>} />
+
+        {/* <SonFunctionComponent msg={this.state.msg} /> */}
+      </>
+    )
+  }
+}
+
+class BroAceComponent extends React.Component {
+  state = {
+    dinner: "今天吃什么"
+  }
+  dinnerChoose = (text) => {
+    this.props.dinnerSuggestion(text)
+  }
+  render() {
+    return (
+      <>
+        <div>老大：{this.state.dinner}</div>
+        <button onClick={() => this.dinnerChoose(prompt("老大今天决定吃..."))}>有个想法</button>
+      </>
+    )
+  }
+}
+
+class BroBravoBomponent extends React.Component {
+  state = {
+    dinner: "今天吃什么"
+  }
+  dinnerChoose = (text) => {
+    this.props.dinnerSuggestion(text)
+  }
+  render() {
+    return (
+      <>
+        <div>老二：{this.state.dinner}</div>
+        <button onClick={() => this.dinnerChoose(prompt("老二今天决定吃..."))}>有个想法</button>
+      </>
+
+    )
+  }
+}
+
+class DaddyComponent extends React.Component {
+  state = {
+    dinner: "老爸还没决定今天吃什么"
+  }
+  msgReceive = (dinnerChoice) => {
+    this.setState ({
+      dinner: "老爸决定今天吃" + dinnerChoice
+    })
+    
+  }
+  render() {
+    return (
+      <div>
+        {this.state.dinner}
+        <hr />
+        <BroAceComponent dinnerSuggestion={this.msgReceive} />
+        <hr />
+        <BroBravoBomponent dinnerSuggestion={this.msgReceive} />
+      </div>
+    )
+  }
+}
+
 
 root.render(
   <div>
-    <HelloFunctionComponenet />
+    {/* <HelloFunctionComponenet />
     <HelloClassComponent />
     <JumpIndexComponent />
     <VolumeChooseComponent />
     <CountComponent />
-    <IngredientsComponent/>
+    <IngredientsComponent /> */}
+    {/* <FormComponent /> */}
+    {/* <InputDomComponent/> */}
+    {/* <ParentClassComponent /> */}
+    <DaddyComponent />
   </div>
 );
